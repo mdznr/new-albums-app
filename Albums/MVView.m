@@ -13,28 +13,28 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation MVView
 
-@synthesize drawBlock         = drawBlock_;
+@synthesize drawBlock = drawBlock_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)frame
 {
-  self = [super initWithFrame:frame];
-  if (self)
-  {
-    drawBlock_ = NULL;
-  }
-  return self;
+	self = [super initWithFrame:frame];
+	if ( self ) {
+		drawBlock_ = NULL;
+	}
+	return self;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect
 {
-  [super drawRect:rect];
-  
-  CGContextRef context = UIGraphicsGetCurrentContext();
-  
-  if(self.drawBlock)
-    self.drawBlock(self,context);
+	[super drawRect:rect];
+	
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	
+	if ( self.drawBlock ) {
+		self.drawBlock(self,context);
+	}
 }
 
 @end

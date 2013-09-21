@@ -26,53 +26,50 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)frame
 {
-  self = [super initWithFrame:frame];
-  if (self)
-  {
-    text_ = @"";
-    
-    self.backgroundColor = [UIColor clearColor];
-    self.opaque = NO;
-  }
-  return self;
+	self = [super initWithFrame:frame];
+	if ( self )
+	{
+		text_ = @"";
+		
+		self.backgroundColor = [UIColor clearColor];
+		self.opaque = NO;
+	}
+	return self;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)sizeToFit
 {
-  CGSize labelSize = [self.text sizeWithFont:kMVRoundedLabelFont];
-  CGRect frame = self.frame;
-  frame.size.width = ceilf(labelSize.width) + kMVRoundedLabelMargin * 2;
-  frame.size.height = kMVRoundedLabelHeight;
-  self.frame = frame;
+	CGSize labelSize = [self.text sizeWithFont:kMVRoundedLabelFont];
+	CGRect frame = self.frame;
+	frame.size.width = ceilf(labelSize.width) + kMVRoundedLabelMargin * 2;
+	frame.size.height = kMVRoundedLabelHeight;
+	self.frame = frame;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect
 {
-  CGRect rrect = CGRectInset(self.bounds, 2, 2);
-  UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:rrect
-                                                  cornerRadius:rrect.size.height / 2];
-  if(!self.isEnabled)
-  {
-    [kMVRoundedLabelColor setStroke];
-    path.lineWidth = 2;
-    [path stroke];
-  }
-  else
-  {
-    [kMVRoundedLabelEnabledColor set];
-    [path fill];
-    [kMVRoundedLabelEnabledColor setStroke];
-    path.lineWidth = 2;
-    [path stroke];
-  }
+	CGRect rrect = CGRectInset(self.bounds, 2, 2);
+	UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:rrect
+													cornerRadius:rrect.size.height / 2];
+	if ( !self.isEnabled ) {
+		[kMVRoundedLabelColor setStroke];
+		path.lineWidth = 2;
+		[path stroke];
+	} else {
+		[kMVRoundedLabelEnabledColor set];
+		[path fill];
+		[kMVRoundedLabelEnabledColor setStroke];
+		path.lineWidth = 2;
+		[path stroke];
+	}
   
-  [(!self.isEnabled ? kMVRoundedLabelColor : kMVRoundedLabelEnabledFontColor) set];
-  [self.text drawAtPoint:CGPointMake(kMVRoundedLabelMargin, 4)
-                forWidth:self.bounds.size.width
-                withFont:kMVRoundedLabelFont
-           lineBreakMode:NSLineBreakByCharWrapping];
+	[(!self.isEnabled ? kMVRoundedLabelColor : kMVRoundedLabelEnabledFontColor) set];
+	[self.text drawAtPoint:CGPointMake(kMVRoundedLabelMargin, 4)
+				  forWidth:self.bounds.size.width
+				  withFont:kMVRoundedLabelFont
+			 lineBreakMode:NSLineBreakByCharWrapping];
 }
 
 @end

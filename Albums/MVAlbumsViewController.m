@@ -99,9 +99,9 @@
                      NO, NO, [NSDate dateWithTimeIntervalSinceNow:- 2 * 30 * 24 * 3600]];
 
     fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
-                                                        managedObjectContext:contextSource.uiMoc
-                                                                      sectionNameKeyPath:nil
-                                                                               cacheName:nil];
+																	managedObjectContext:contextSource.uiMoc
+																	  sectionNameKeyPath:nil
+																			   cacheName:nil];
     fetchedResultsController_.delegate = self;
    
     sectionDateFormatter_ = [[NSDateFormatter alloc] init];

@@ -134,8 +134,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)iTunesSearchRequestDidFail:(MViTunesSearchRequest *)request
 {
-  if([self.delegate respondsToSelector:@selector(albumsRequestDidFail:)])
-    [self.delegate albumsRequestDidFail:self];
+	if ( [self.delegate respondsToSelector:@selector(albumsRequestDidFail:)] ) {
+		[self.delegate albumsRequestDidFail:self];
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,8 +144,7 @@
              didFindResults:(NSArray *)results
 {
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    if(results.count > 0)
-    {
+    if ( results.count > 0 ) {
       NSArray *artistIds = [request.ids componentsSeparatedByString:@","];
       NSDictionary *albumDic;
       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -153,21 +153,20 @@
       dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
 
       [self.contextSource performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
-        for(albumDic in results)
-        {
+        for ( albumDic in results ) {
           long long artistId = [[albumDic valueForKey:@"artistId"] longLongValue];
           NSNumber *artistNumberId = [NSNumber numberWithLongLong:artistId];
-          if([artistIds containsObject:artistNumberId.stringValue])
-          {
+          if ( [artistIds containsObject:artistNumberId.stringValue] ) {
             long long albumId = [[albumDic valueForKey:@"collectionId"] longLongValue];
             NSNumber *albumNumberId = [NSNumber numberWithLongLong:albumId];
-            MVAlbum *album = (MVAlbum*)[MVAlbum objectWithiTunesId:albumNumberId
-                                                             inMoc:moc];
-            if(!album)
-            {
+            MVAlbum *album = (MVAlbum *)[MVAlbum objectWithiTunesId:albumNumberId
+															  inMoc:moc];
+            if ( !album ) {
               NSString *name = [albumDic valueForKey:@"collectionName"];
               NSString *releaseDateString = [albumDic valueForKey:@"releaseDate"];
               NSDate *releaseDate = [dateFormatter dateFromString:releaseDateString];
+#warning log
+				NSLog(@"%@: %@", name, releaseDate);
               NSString *iTunesStoreUrl = [albumDic valueForKey:@"collectionViewUrl"];
               NSString *artworkUrl = [albumDic valueForKey:@"artworkUrl100"];
               
@@ -180,10 +179,9 @@
               album.iTunesStoreUrl = iTunesStoreUrl;
               album.artworkUrl = artworkUrl;
               
-              MVArtist *artist = (MVArtist*)[MVArtist objectWithiTunesId:artistNumberId
-                                                                   inMoc:moc];
-              if(!artist)
-              {
+              MVArtist *artist = (MVArtist *)[MVArtist objectWithiTunesId:artistNumberId
+																	inMoc:moc];
+              if ( !artist ) {
                 artist = [MVArtist insertInManagedObjectContext:moc];
                 artist.iTunesIdValue = artistId;
                 artist.name = [albumDic valueForKey:@"artistName"];
@@ -198,14 +196,14 @@
     self.batchesLeft--;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-      if([self.delegate respondsToSelector:@selector(albumsRequestDidFinish:didChangeProgression:)])
+      if ( [self.delegate respondsToSelector:@selector(albumsRequestDidFinish:didChangeProgression:)] )
         [self.delegate albumsRequestDidFinish:self
                          didChangeProgression:MIN(self.artistIds.count,
                                                   (self.nbBatches - self.batchesLeft) *
                                                   self.nbArtistsPerBatch)];
     });
     
-    if(self.batchesLeft == 0)
+    if ( self.batchesLeft == 0 )
       [self complete];
   });
 }

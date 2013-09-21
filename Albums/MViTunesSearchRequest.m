@@ -63,17 +63,17 @@
   self.searched = YES;
   
   NSMutableArray *args = [NSMutableArray array];
-  if(self.country)
+  if ( self.country )
     [args addObject:[NSString stringWithFormat:@"country=%@",self.country.escapedString]];
-  if(self.term)
+  if ( self.term )
     [args addObject:[NSString stringWithFormat:@"term=%@",self.term.escapedString]];
-  if(self.ids)
+  if ( self.ids )
     [args addObject:[NSString stringWithFormat:@"id=%@",self.ids]];
-  if(self.entity != kMViTunesEntityNone)
+  if ( self.entity != kMViTunesEntityNone )
     [args addObject:[NSString stringWithFormat:@"entity=%@",self.entity.escapedString]];
-  if(self.limit != kMViTunesLimitNone)
+  if ( self.limit != kMViTunesLimitNone )
     [args addObject:[NSString stringWithFormat:@"limit=%i",self.limit]];
-  if(self.sort != kMViTunesSortNone)
+  if ( self.sort != kMViTunesSortNone )
     [args addObject:[NSString stringWithFormat:@"sort=%@",self.sort.escapedString]];
   
   NSString *query = [args componentsJoinedByString:@"&"];
@@ -86,7 +86,7 @@
   [self.request get:^(NSObject *json) {
     @try
     {
-      if(json && [json isKindOfClass:[NSDictionary class]])
+      if ( json && [json isKindOfClass:[NSDictionary class]] )
       {
         NSDictionary *dic = (NSDictionary*)json;
         NSArray *results = [dic valueForKey:@"results"];
