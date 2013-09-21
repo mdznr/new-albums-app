@@ -16,9 +16,9 @@
 
 #define kMVAlbumArtSize 60
 
-#define kMVAlbumContentViewBgColor0 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
-#define kMVAlbumContentViewBgColor1 [UIColor colorWithRed:0.4365 green:0.4365 blue:0.4365 alpha:1]
-#define kMVAlbumContentViewBgColor2 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
+#define kMVAlbumContentViewBgColor0 [UIColor colorWithWhite:0.0f alpha:0.25]
+#define kMVAlbumContentViewBgColor1 [UIColor colorWithWhite:0.0f alpha:0.0f]
+#define kMVAlbumContentViewBgColor2 [UIColor colorWithWhite:0.0f alpha:0.25]
 
 #define kMVAlbumControlStartMargin 2
 #define kMVAlbumControlEndMarginFromY -6
@@ -86,9 +86,12 @@ static NSCache *artworkImagesCache = nil;
 		delegate_ = nil;
 
 		__block __weak MVAlbumCell *cell = self;
+		
+		self.backgroundColor = [UIColor clearColor];
 
 		MVView *contentView = [[MVView alloc] initWithFrame:self.contentView.bounds];
 		contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		contentView.backgroundColor = [UIColor clearColor];
 		contentView.drawBlock = ^(UIView *view, CGContextRef ctx)
 		{
 			CGContextRef context = UIGraphicsGetCurrentContext();
