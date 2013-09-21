@@ -66,23 +66,23 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidLoad
 {
-  self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-	self.view.backgroundColor = [UIColor colorWithRed:0.9129 green:0.9129 blue:0.9129 alpha:1.0000];
-  self.view.layer.cornerRadius = 8.0;
-  
-  float startY = roundf(self.view.frame.size.height / 4.06);
-  
-  UIImage *iconImage = [UIImage imageNamed:@"flat_icon"];
-  self.iconImageView = [[UIImageView alloc] initWithImage:iconImage];
-  self.iconImageView.frame = CGRectMake(CGRectGetMidX(self.view.frame) -
-                                        CGRectGetWidth(self.iconImageView.frame) / 2,
-                                        startY,
-                                        self.iconImageView.frame.size.width,
-                                        self.iconImageView.frame.size.height);
-  self.iconImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
-                                        UIViewAutoresizingFlexibleRightMargin;
-  [self.view addSubview:self.iconImageView];
-  
+	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+	self.view.backgroundColor = [UIColor clearColor];
+	self.view.layer.cornerRadius = 8.0;
+
+	float startY = roundf(self.view.frame.size.height / 4.06);
+
+	UIImage *iconImage = [UIImage imageNamed:@"flat_icon"];
+	self.iconImageView = [[UIImageView alloc] initWithImage:iconImage];
+	self.iconImageView.frame = CGRectMake(CGRectGetMidX(self.view.frame) -
+										  CGRectGetWidth(self.iconImageView.frame) / 2,
+										  startY,
+										  self.iconImageView.frame.size.width,
+										  self.iconImageView.frame.size.height);
+	self.iconImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin |
+	                                      UIViewAutoresizingFlexibleRightMargin;
+	[self.view addSubview:self.iconImageView];
+	
   self.headLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, startY + 70 - 17 / 2,
                                                              CGRectGetWidth(self.view.frame) - 60,
                                                              40)];

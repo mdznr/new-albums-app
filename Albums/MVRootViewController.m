@@ -67,24 +67,23 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidLoad
 {
-  if(!self.mainView)
-  {
-    self.mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
-                                                             self.view.frame.size.width,
-                                                             self.view.frame.size.height)];
-    [self.view addSubview:self.mainView];
-  }
-  
-  if(self.coreManager.hasSyncedAtLeastOnce)
-  {
-    self.albumsViewController.view.frame = self.mainView.bounds;
-    [self.mainView addSubview:self.albumsViewController.view];
-  }
-  else
-  {
-    self.firstSyncViewController.view.frame = self.mainView.bounds;
-    [self.mainView addSubview:self.firstSyncViewController.view];
-  }
+	self.view.backgroundColor = [UIColor clearColor];
+	if ( !self.mainView ) {
+		self.mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
+																 self.view.frame.size.width,
+																 self.view.frame.size.height)];
+		[self.view addSubview:self.mainView];
+	}
+	
+	if ( self.coreManager.hasSyncedAtLeastOnce ) {
+		self.albumsViewController.view.frame = self.mainView.bounds;
+		[self.mainView addSubview:self.albumsViewController.view];
+	} else {
+		self.firstSyncViewController.view.frame = self.mainView.bounds;
+		[self.mainView addSubview:self.firstSyncViewController.view];
+	}
+	
+	self.mainView.backgroundColor = [UIColor clearColor];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

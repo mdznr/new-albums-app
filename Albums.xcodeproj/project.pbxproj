@@ -52,7 +52,6 @@
 		4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */; };
 		4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */; };
 		4C585EE616D6BF3A008A9C23 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE516D6BF3A008A9C23 /* Default@2x.png */; };
-		4C5FCC7F16DBD8CF0054817B /* MVStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5FCC7E16DBD8CF0054817B /* MVStatusBarOverlay.m */; };
 		4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA331625FC57005B6878 /* MVRootViewController.m */; };
 		4C68CA3816260173005B6878 /* MVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA3716260173005B6878 /* MVWindow.m */; };
 		4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C68CA4116260EC3005B6878 /* QuartzCore.framework */; };
@@ -65,6 +64,7 @@
 		4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */; };
 		4CFE72D81694B93700DDDF61 /* NSObject+PerformBlockOnThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D71694B93700DDDF61 /* NSObject+PerformBlockOnThread.m */; };
 		4CFE72DB1694B9A100DDDF61 /* MVManagedObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72DA1694B9A100DDDF61 /* MVManagedObjectContext.m */; };
+		C9C182E417EE446B005AF9A3 /* MVStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C182E317EE446B005AF9A3 /* MVStatusBarOverlay.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -144,8 +144,6 @@
 		4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress_bar_progress@2x.png"; sourceTree = "<group>"; };
 		4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress_bar_track@2x.png"; sourceTree = "<group>"; };
 		4C585EE516D6BF3A008A9C23 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
-		4C5FCC7D16DBD8CF0054817B /* MVStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVStatusBarOverlay.h; sourceTree = "<group>"; };
-		4C5FCC7E16DBD8CF0054817B /* MVStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVStatusBarOverlay.m; sourceTree = "<group>"; };
 		4C68CA321625FC57005B6878 /* MVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRootViewController.h; sourceTree = "<group>"; };
 		4C68CA331625FC57005B6878 /* MVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVRootViewController.m; sourceTree = "<group>"; };
 		4C68CA3616260173005B6878 /* MVWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVWindow.h; sourceTree = "<group>"; };
@@ -168,6 +166,8 @@
 		4CFE72D71694B93700DDDF61 /* NSObject+PerformBlockOnThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+PerformBlockOnThread.m"; sourceTree = "<group>"; };
 		4CFE72D91694B97F00DDDF61 /* MVManagedObjectContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVManagedObjectContext.h; sourceTree = "<group>"; };
 		4CFE72DA1694B9A100DDDF61 /* MVManagedObjectContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVManagedObjectContext.m; sourceTree = "<group>"; };
+		C9C182E217EE446B005AF9A3 /* MVStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVStatusBarOverlay.h; sourceTree = "<group>"; };
+		C9C182E317EE446B005AF9A3 /* MVStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVStatusBarOverlay.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -374,8 +374,8 @@
 				4C5140831606786100279CA0 /* MVAlbumCell.m */,
 				4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */,
 				4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */,
-				4C5FCC7D16DBD8CF0054817B /* MVStatusBarOverlay.h */,
-				4C5FCC7E16DBD8CF0054817B /* MVStatusBarOverlay.m */,
+				C9C182E217EE446B005AF9A3 /* MVStatusBarOverlay.h */,
+				C9C182E317EE446B005AF9A3 /* MVStatusBarOverlay.m */,
 				4C08E0E616DD43C3000BF49E /* MVPlaceholderView.h */,
 				4C08E0E716DD43C3000BF49E /* MVPlaceholderView.m */,
 			);
@@ -442,6 +442,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Michael Villar";
+				TargetAttributes = {
+					4C39062B1606212F00155E4E = {
+						DevelopmentTeam = 3SZ7MS7NXC;
+					};
+				};
 			};
 			buildConfigurationList = 4C3906261606212F00155E4E /* Build configuration list for PBXProject "Albums" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -499,6 +504,7 @@
 				4C3906611606341300155E4E /* Model.xcdatamodeld in Sources */,
 				4C39066F1606355500155E4E /* MVAlbum.m in Sources */,
 				4C3906701606355500155E4E /* MVArtist.m in Sources */,
+				C9C182E417EE446B005AF9A3 /* MVStatusBarOverlay.m in Sources */,
 				4C3906711606355500155E4E /* _MVAlbum.m in Sources */,
 				4C3906721606355500155E4E /* _MVArtist.m in Sources */,
 				4C390684160636DB00155E4E /* MVBaseModel.m in Sources */,
@@ -523,7 +529,6 @@
 				4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */,
 				4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */,
 				4C585EDB16D6ACDB008A9C23 /* MVFirstSyncViewController.m in Sources */,
-				4C5FCC7F16DBD8CF0054817B /* MVStatusBarOverlay.m in Sources */,
 				4C08E0E816DD43C3000BF49E /* MVPlaceholderView.m in Sources */,
 				4C3913AC16E502AA00A13059 /* NSString+Levenshtein.m in Sources */,
 			);
@@ -601,12 +606,13 @@
 		4C39064B1606212F00155E4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Michaël Villar (JAT68FWQX5)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Albums/Albums-Prefix.pch";
 				INFOPLIST_FILE = "Albums/Albums-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "94C18D39-91AD-4217-9EE4-D7F442B86EE9";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -614,12 +620,13 @@
 		4C39064C1606212F00155E4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Michaël Villar";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Albums/Albums-Prefix.pch";
 				INFOPLIST_FILE = "Albums/Albums-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CFECE93D-4B63-44BF-BCB3-DB83FB2ED374";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

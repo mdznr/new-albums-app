@@ -29,8 +29,6 @@
 @property (strong, readwrite) UITableView *tableView;
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
-@property (strong, readwrite) MVView *roundedTopCorners;
-@property (strong, readwrite) MVView *roundedBottomCorners;
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (strong, readwrite) MVArtist *actionSheetArtistToHide;
 @property (strong, readwrite, nonatomic) MVPlaceholderView *placeholderView;
@@ -55,8 +53,6 @@
 @synthesize tableView                 = tableView_,
             fetchedResultsController  = fetchedResultsController_,
             sectionDateFormatter      = sectionDateFormatter_,
-            roundedTopCorners         = roundedTopCorners_,
-            roundedBottomCorners      = roundedBottomCorners_,
             coreManager               = coreManager_,
             actionSheetArtistToHide   = actionSheetArtistToHide_,
             placeholderView           = placeholderView_,
@@ -107,9 +103,6 @@
     sectionDateFormatter_ = [[NSDateFormatter alloc] init];
     sectionDateFormatter_.dateFormat = @"MM/dd";
     
-    roundedTopCorners_ = nil;
-    roundedBottomCorners_ = nil;
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncDidStart:)
                                                  name:kMVNotificationSyncDidStart
                                                object:self.coreManager];
@@ -132,80 +125,21 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)loadView
 {
-  self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-	self.view.backgroundColor = [UIColor blackColor];
-  
-  self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds
-                                                style:UITableViewStylePlain];
-  self.tableView.backgroundColor = [UIColor blackColor];
-  self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-  self.tableView.rowHeight = 50.0;
-  self.tableView.delegate = self;
-  self.tableView.dataSource = self;
-  self.tableView.canCancelContentTouches = NO;
-  [self.view addSubview:self.tableView];
-  
-  if(!self.roundedTopCorners)
-  {
-    self.roundedTopCorners = [[MVView alloc] initWithFrame:CGRectMake(0,
-                                                                      0,
-                                                                      self.view.bounds.size.width,
-                                                                      kMVCellRadius)];
-    self.roundedTopCorners.autoresizingMask = UIViewAutoresizingNone;
-    self.roundedTopCorners.backgroundColor = [UIColor clearColor];
-    self.roundedTopCorners.drawBlock = ^(UIView *view, CGContextRef ref)
-    {
-      UIBezierPath *path = [UIBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(0, kMVCellRadius)];
-      [path addCurveToPoint:CGPointMake(kMVCellRadius, 0)
-              controlPoint1:CGPointMake(0, 0)
-              controlPoint2:CGPointMake(kMVCellRadius, 0)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVCellRadius, 0)];
-      [path addCurveToPoint:CGPointMake(view.frame.size.width, kMVCellRadius)
-              controlPoint1:CGPointMake(view.frame.size.width, 0)
-              controlPoint2:CGPointMake(view.frame.size.width, kMVCellRadius)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width, 0)];
-      [path addLineToPoint:CGPointMake(0, 0)];
-      [path closePath];
-      
-      [[UIColor blackColor] set];
-      [path fill];
-    };
-  }
-  [self.view addSubview:self.roundedTopCorners];
+	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+	self.view.backgroundColor = [UIColor clearColor];
 
-  if(!self.roundedBottomCorners)
-  {
-    self.roundedBottomCorners = [[MVView alloc] initWithFrame:CGRectMake(0,
-                                                                         self.view.bounds.size.height -
-                                                                         kMVCellRadius,
-                                                                         self.view.bounds.size.width,
-                                                                         kMVCellRadius)];
-    self.roundedBottomCorners.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    self.roundedBottomCorners.backgroundColor = [UIColor clearColor];
-    self.roundedBottomCorners.drawBlock = ^(UIView *view, CGContextRef ref)
-    {
-      UIBezierPath *path = [UIBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(0, 0)];
-      [path addCurveToPoint:CGPointMake(kMVCellRadius, kMVCellRadius)
-              controlPoint1:CGPointMake(0, kMVCellRadius)
-              controlPoint2:CGPointMake(kMVCellRadius, kMVCellRadius)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVCellRadius, kMVCellRadius)];
-      [path addCurveToPoint:CGPointMake(view.frame.size.width, 0)
-              controlPoint1:CGPointMake(view.frame.size.width, kMVCellRadius)
-              controlPoint2:CGPointMake(view.frame.size.width, 0)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width, kMVCellRadius + 1)];
-      [path addLineToPoint:CGPointMake(0, kMVCellRadius + 1)];
-      [path closePath];
-      
-      [[UIColor blackColor] set];
-      [path fill];
-    };
-  }
-  [self.view addSubview:self.roundedBottomCorners];
-  
-  [self.fetchedResultsController performFetch:nil];
-  [self updatePlaceholder:NO];
+	self.tableView = [[UITableView alloc] initWithFrame:CGRectOffset(self.view.bounds, 0, 20)
+												  style:UITableViewStylePlain];
+	self.tableView.backgroundColor = [UIColor clearColor];
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.tableView.rowHeight = 50.0;
+	self.tableView.delegate = self;
+	self.tableView.dataSource = self;
+	self.tableView.canCancelContentTouches = NO;
+	[self.view addSubview:self.tableView];
+
+	[self.fetchedResultsController performFetch:nil];
+	[self updatePlaceholder:NO];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

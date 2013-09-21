@@ -166,7 +166,7 @@ static NSCache *artworkImagesCache = nil;
 					[[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
 				}
 				[[UIBezierPath bezierPathWithRoundedRect:labelRect
-												cornerRadius:9] fill];
+											cornerRadius:9] fill];
         
 				[[UIColor whiteColor] set];
 				[releaseDate drawAtPoint:CGPointMake(labelRect.origin.x + 5, labelRect.origin.y + 1)
