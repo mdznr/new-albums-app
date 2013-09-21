@@ -29,8 +29,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation AppDelegate
 
-@synthesize coreManager       = coreManager_,
-            statusBarView     = statusBarView_;
+@synthesize coreManager         = coreManager_,
+			statusBarBackground = statusBarBackground_,
+            statusBarView       = statusBarView_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init
@@ -92,8 +93,9 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 		[defaults setValue:appStoreCountry forKey:kMVPreferencesAppStoreCountry];
 		[defaults synchronize];
 	}
-
-	self.window = [[MVWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	
+	CGRect rect = [[UIScreen mainScreen] bounds];
+	self.window = [[MVWindow alloc] initWithFrame:rect];
 
 	self.window.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.75];
 
@@ -104,6 +106,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 	[self.window makeKeyAndVisible];
 
 	self.statusBarView = [[MVStatusBarOverlay alloc] init];
+	
+	CGRect statusBarRect = (CGRect){rect.origin.x,rect.origin.y,rect.size.width,20};
+	self.statusBarBackground = [[UINavigationBar alloc] initWithFrame:statusBarRect];
+	((UINavigationBar *)self.statusBarBackground).barStyle = UIBarStyleBlack;
+	self.statusBarBackground.alpha = 0.0f;
+	[self.window addSubview:self.statusBarBackground];
 
 	return YES;
 }
@@ -129,20 +137,21 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if(object == self.coreManager)
-  {
-    if(self.coreManager.hasSyncedAtLeastOnce)
-    {
-      self.statusBarView.text = [NSString stringWithFormat:
-                                 NSLocalizedString(@"Synchronizing (%i%%)…",
-                                                   @"Sync progress status bar label"),
-                                 (int)(round(self.coreManager.progression * 100))];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidProgress
+	if ( object == self.coreManager ) {
+		if ( self.coreManager.hasSyncedAtLeastOnce ) {
+			self.statusBarView.text = [NSString stringWithFormat:
+									   NSLocalizedString(@"Synchronizing (%i%%)…",
+														 @"Sync progress status bar label"),
+									   (int)(round(self.coreManager.progression * 100))];
+		}
+		[[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidProgress
                                                         object:self.coreManager];
-  }
-  else
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	} else {
+		[super observeValueForKeyPath:keyPath
+							 ofObject:object
+							   change:change
+							  context:context];
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,43 +162,40 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)coreManagerDidStartSync:(MVCoreManager *)coreManager
 {
-  if(self.coreManager.hasSyncedAtLeastOnce)
-  {
-    self.statusBarView.text = NSLocalizedString(@"Synchronizing…", @"Sync status bar label");
-    [self.statusBarView setOverlayHidden:NO animated:YES];
-  }
-  [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidStart
-                                                      object:self.coreManager];
+	if ( self.coreManager.hasSyncedAtLeastOnce ) {
+		self.statusBarView.text = NSLocalizedString(@"Synchronizing…", @"Sync status bar label");
+		[self.statusBarView setOverlayHidden:NO animated:YES];
+	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidStart
+														object:self.coreManager];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)coreManagerDidFinishSync:(MVCoreManager *)coreManager
 {
-  if(self.coreManager.hasSyncedAtLeastOnce)
-  {
-    self.statusBarView.text = NSLocalizedString(@"Done", @"Finished sync status bar label");
-    double delayInSeconds = 1.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-      [self.statusBarView setOverlayHidden:YES animated:YES];
-    });
-  }
-  [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidFinish
-                                                      object:self.coreManager];
+	if ( self.coreManager.hasSyncedAtLeastOnce ) {
+		self.statusBarView.text = NSLocalizedString(@"Done", @"Finished sync status bar label");
+		double delayInSeconds = 1.0;
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			[self.statusBarView setOverlayHidden:YES animated:YES];
+		});
+	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidFinish
+														object:self.coreManager];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)coreManagerDidFailToSync:(MVCoreManager *)coreManager
 {
-  if(self.coreManager.hasSyncedAtLeastOnce)
-  {
-    self.statusBarView.text = NSLocalizedString(@"Failed to sync", @"Failed sync status bar label");
-    double delayInSeconds = 1.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-      [self.statusBarView setOverlayHidden:YES animated:YES];
-    });
-  }
+	if ( self.coreManager.hasSyncedAtLeastOnce ) {
+		self.statusBarView.text = NSLocalizedString(@"Failed to sync", @"Failed sync status bar label");
+		double delayInSeconds = 1.0;
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			[self.statusBarView setOverlayHidden:YES animated:YES];
+		});
+	}
 }
 
 @end

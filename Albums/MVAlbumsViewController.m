@@ -7,6 +7,7 @@
 //
 
 #import <StoreKit/StoreKit.h>
+#import "AppDelegate.h"
 #import "MVAlbumsViewController.h"
 #import "MVContextSource.h"
 #import "MVAlbum.h"
@@ -127,9 +128,12 @@
 {
 	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 	self.view.backgroundColor = [UIColor clearColor];
-
-	self.tableView = [[UITableView alloc] initWithFrame:CGRectOffset(self.view.bounds, 0, 20)
+	
+	CGRect rect = self.view.bounds;
+	self.tableView = [[UITableView alloc] initWithFrame:(CGRect){rect.origin.x, rect.origin.y, rect.size.width, rect.size.height+20}
 												  style:UITableViewStylePlain];
+	self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+	self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(20, 0, 0, 0);
 	self.tableView.backgroundColor = [UIColor clearColor];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.tableView.rowHeight = 50.0;
@@ -145,13 +149,31 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidLoad
 {
-  [super viewDidLoad];
+	[super viewDidLoad];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidUnload
 {
-  [super viewDidUnload];
+	[super viewDidUnload];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+	UIView *nav = ((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground;
+	
+#warning reduce redundant calls to set alpha?
+	if ( scrollView.contentOffset.y < -20.0f ) {
+		nav.alpha = 0.0f;
+	} else if ( scrollView.contentOffset.y > 0.0f ) {
+		nav.alpha = 1.0f;
+	} else {
+		nav.alpha = (20.0f + scrollView.contentOffset.y)/20.0f;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,96 +184,90 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  NSIndexPath *currentIndexPath = self.tableView.indexPathForSelectedRow;
-  if([self.tableView.indexPathsForVisibleRows containsObject:currentIndexPath]) {
-    MVAlbumCell *cell = (MVAlbumCell*)[self.tableView cellForRowAtIndexPath:currentIndexPath];
-    cell.loading = NO;
-  }
-  
-  return indexPath;
+	NSIndexPath *currentIndexPath = self.tableView.indexPathForSelectedRow;
+	if ( [self.tableView.indexPathsForVisibleRows containsObject:currentIndexPath] ) {
+		MVAlbumCell *cell = (MVAlbumCell*)[self.tableView cellForRowAtIndexPath:currentIndexPath];
+		cell.loading = NO;
+	}
+
+	return indexPath;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
-  
-  if(NSClassFromString(@"SKStoreProductViewController"))
-  {
-    self.iTunesStoreLoadingAlbum = album;
+	MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	
+	if ( NSClassFromString(@"SKStoreProductViewController") ) {
+		self.iTunesStoreLoadingAlbum = album;
 
-    MVAlbumCell *cell = (MVAlbumCell*)[tableView cellForRowAtIndexPath:indexPath];
-    cell.loading = YES;
-    SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
-    storeController.delegate = self;
-    NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId.copy
-                                              forKey:SKStoreProductParameterITunesItemIdentifier];
-    
-    if(self.iTunesStoreTimer)
-      [self.iTunesStoreTimer invalidate];
-    self.iTunesStoreTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self
-                                                        selector:@selector(iTunesStoreTimerAction:)
-                                                           userInfo:nil repeats:NO];
-    
-    self.iTunesStoreIncrementCall++;
-    NSUInteger currentiTunesStoreIncrementCall = self.iTunesStoreIncrementCall;
-    
-    [storeController loadProductWithParameters:productParameters
-                               completionBlock:^(BOOL result, NSError *error)
-     {
-       if (currentiTunesStoreIncrementCall != self.iTunesStoreIncrementCall)
-         return;
-       
-       self.iTunesStoreLoadingAlbum = nil;
-       
-       if(self.iTunesStoreTimer) {
-         [self.iTunesStoreTimer invalidate];
-         self.iTunesStoreTimer = nil;
-       }
-       
-       if (result) {
-         [self presentViewController:storeController animated:YES completion:^{
-           cell.loading = NO;
-           [tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
-                                    animated:NO];
-         }];
-       } else {
-         cell.loading = NO;
-         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-         [self displayiTunesError:error.localizedDescription];
-       }
-     }];
-  }
-  else
-  {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-  }
+		MVAlbumCell *cell = (MVAlbumCell*)[tableView cellForRowAtIndexPath:indexPath];
+		cell.loading = YES;
+		SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
+		storeController.delegate = self;
+		NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId.copy
+												  forKey:SKStoreProductParameterITunesItemIdentifier];
+		
+		if ( self.iTunesStoreTimer ) [self.iTunesStoreTimer invalidate];
+		
+		self.iTunesStoreTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self
+															selector:@selector(iTunesStoreTimerAction:)
+															   userInfo:nil repeats:NO];
+		
+		self.iTunesStoreIncrementCall++;
+		NSUInteger currentiTunesStoreIncrementCall = self.iTunesStoreIncrementCall;
+		
+		[storeController loadProductWithParameters:productParameters
+								   completionBlock:^(BOOL result, NSError *error) {
+			if ( currentiTunesStoreIncrementCall != self.iTunesStoreIncrementCall ) return;
+
+			self.iTunesStoreLoadingAlbum = nil;
+		   
+			if ( self.iTunesStoreTimer ) {
+				[self.iTunesStoreTimer invalidate];
+				self.iTunesStoreTimer = nil;
+			}
+		   
+		   if ( result ) {
+				[self presentViewController:storeController animated:YES completion:^{
+					cell.loading = NO;
+					[tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
+										animated:NO];
+				}];
+		   } else {
+			   cell.loading = NO;
+			   [tableView deselectRowAtIndexPath:indexPath animated:YES];
+			   [self displayiTunesError:error.localizedDescription];
+		   }
+	   }];
+	} else {
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
+		[tableView deselectRowAtIndexPath:indexPath animated:NO];
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  return YES;
+	return YES;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action
 forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
-  return action == @selector(copy:);
+	return action == @selector(copy:);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action
 forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
-  if(action == @selector(copy:))
-  {
-    MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    UIPasteboard *pboard = [UIPasteboard generalPasteboard];
-    [pboard setURL:[NSURL URLWithString:album.iTunesStoreUrl]];
-  }
+	if ( action == @selector(copy:) ) {
+		MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
+		UIPasteboard *pboard = [UIPasteboard generalPasteboard];
+		[pboard setURL:[NSURL URLWithString:album.iTunesStoreUrl]];
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,50 +278,48 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  return self.fetchedResultsController.sections.count;
+	return self.fetchedResultsController.sections.count;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
 {
-  NSInteger rows =  [[[self.fetchedResultsController sections] objectAtIndex:section]
-                     numberOfObjects];
-  return rows;
+	NSInteger rows =  [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
+	return rows;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  return [MVAlbumCell rowHeight];
+	return [MVAlbumCell rowHeight];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
-  NSString *cellIdentifier = @"cellIdentifier";
-  
-  MVAlbumCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-  if(!cell)
-  {
-    cell = [[MVAlbumCell alloc] initWithStyle:UITableViewCellStyleDefault
-                              reuseIdentifier:cellIdentifier];
-    cell.tableView = tableView;
-  }
-  cell.loading = (self.iTunesStoreLoadingAlbum &&
-                  [self.iTunesStoreLoadingAlbum.objectID isEqual:album.objectID]);
-  cell.delegate = self;
-  cell.album = album;
-  [cell setNeedsDisplay];
-  return cell;
+	MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	NSString *cellIdentifier = @"cellIdentifier";
+
+	MVAlbumCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+	if ( !cell ) {
+		cell = [[MVAlbumCell alloc] initWithStyle:UITableViewCellStyleDefault
+								  reuseIdentifier:cellIdentifier];
+		cell.tableView = tableView;
+	}
+	cell.loading = (self.iTunesStoreLoadingAlbum &&
+					[self.iTunesStoreLoadingAlbum.objectID isEqual:album.objectID]);
+	cell.delegate = self;
+	cell.album = album;
+	[cell setNeedsDisplay];
+	return cell;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-  return [NSArray array];
+	return [NSArray array];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,11 +347,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)albumCellDidTriggerHideAlbum:(MVAlbumCell *)albumCell
 {
-  [self reloadTableViewAfterBlock:^{
-    MVAlbum *album = albumCell.album;
-    album.hiddenValue = YES;
-    [self.contextSource.uiMoc mv_save];
-  }];
+	[self reloadTableViewAfterBlock:^{
+		MVAlbum *album = albumCell.album;
+		album.hiddenValue = YES;
+		[self.contextSource.uiMoc mv_save];
+	}];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
