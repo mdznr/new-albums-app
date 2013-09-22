@@ -30,7 +30,6 @@
 @implementation AppDelegate
 
 @synthesize coreManager         = coreManager_,
-			statusBarBackground = statusBarBackground_,
             statusBarView       = statusBarView_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,12 +105,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 	[self.window makeKeyAndVisible];
 
 	self.statusBarView = [[MVStatusBarOverlay alloc] init];
-	
-	CGRect statusBarRect = (CGRect){rect.origin.x,rect.origin.y,rect.size.width,20};
-	self.statusBarBackground = [[UINavigationBar alloc] initWithFrame:statusBarRect];
-	((UINavigationBar *)self.statusBarBackground).barStyle = UIBarStyleBlack;
-	self.statusBarBackground.alpha = 0.0f;
-	[self.window addSubview:self.statusBarBackground];
 
 	return YES;
 }

@@ -38,6 +38,7 @@
 @property (strong, readwrite) NSTimer *iTunesStoreTimer;
 @property (strong, readwrite) MVAlbum *iTunesStoreLoadingAlbum;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
+@property (strong, nonatomic) UINavigationBar *statusBarBackground;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
 - (void)updatePlaceholder:(BOOL)animated;
@@ -141,6 +142,12 @@
 	self.tableView.dataSource = self;
 	self.tableView.canCancelContentTouches = NO;
 	[self.view addSubview:self.tableView];
+	
+	CGRect statusBarRect = (CGRect){rect.origin.x,rect.origin.y,rect.size.width,20};
+	self.statusBarBackground = [[UINavigationBar alloc] initWithFrame:statusBarRect];
+	((UINavigationBar *)self.statusBarBackground).barStyle = UIBarStyleBlack;
+	self.statusBarBackground.alpha = 0.0f;
+	[self.view addSubview:self.statusBarBackground];
 
 	[self.fetchedResultsController performFetch:nil];
 	[self updatePlaceholder:NO];
@@ -164,16 +171,14 @@
 #pragma mark UIScrollViewDelegate Methods
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	UIView *nav = ((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground;
-	
 #warning reduce redundant calls to set alpha?
 #warning wish there was a way to set blur instead of just opacity
 	if ( scrollView.contentOffset.y < -20.0f ) {
-		nav.alpha = 0.0f;
+		self.statusBarBackground.alpha = 0.0f;
 	} else if ( scrollView.contentOffset.y > 0.0f ) {
-		nav.alpha = 1.0f;
+		self.statusBarBackground.alpha = 1.0f;
 	} else {
-		nav.alpha = (20.0f + scrollView.contentOffset.y)/20.0f;
+		self.statusBarBackground.alpha = (20.0f + scrollView.contentOffset.y)/20.0f;
 	}
 }
 
@@ -230,16 +235,6 @@
 			}
 		   
 		   if ( result ) {
-#warning this animation is not exact to the time that it takes to the pushed view controller starts to appear at status bar
-			   [UIView animateWithDuration:1.0f
-									 delay:0.0f
-					usingSpringWithDamping:1.0f
-					 initialSpringVelocity:1.0f
-								   options:UIViewAnimationOptionBeginFromCurrentState
-								animations:^{
-									((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground.alpha = 0.0f;
-								}
-								completion:^(BOOL finished) {}];
 				[self presentViewController:storeController animated:YES completion:^{
 					cell.loading = NO;
 					[tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
@@ -576,16 +571,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
 {
-	[UIView animateWithDuration:0.75f
-						  delay:0.0f
-		 usingSpringWithDamping:1.0f
-		  initialSpringVelocity:1.0f
-						options:UIViewAnimationOptionBeginFromCurrentState
-					 animations:^{
-#warning set alpha bsaed on scroll position
-						 ((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground.alpha = 1.0f;
-					 }
-					 completion:^(BOOL finished) {}];
   [self dismissViewControllerAnimated:YES completion:^{
   }];
 }
