@@ -16,10 +16,6 @@
 
 #define kMVAlbumArtSize 60
 
-#define kMVAlbumContentViewBgColor0 [UIColor colorWithWhite:0.0f alpha:0.15]
-#define kMVAlbumContentViewBgColor1 [UIColor colorWithWhite:0.0f alpha:0.0f]
-#define kMVAlbumContentViewBgColor2 [UIColor colorWithWhite:0.0f alpha:0.15]
-
 #define kMVAlbumControlStartMargin 2
 #define kMVAlbumControlEndMarginFromY -6
 
@@ -34,9 +30,14 @@ static NSCache *artworkImagesCache = nil;
 @property (strong, readwrite) UIImage *artworkImage;
 @property (strong, readwrite) MVView *albumView;
 @property (strong, readwrite) MVView *artworkView;
+@property (strong, nonatomic) MVView *cv;
 @property (strong, readwrite) MVRoundedLabelView *hideAlbumLabelView;
 @property (strong, readwrite) MVRoundedLabelView *hideArtistLabelView;
 @property (strong, readwrite) UIActivityIndicatorView *spinnerView;
+
+@property (strong, nonatomic) UIColor *MVAlbumContentViewBgColor0;
+@property (strong, nonatomic) UIColor *MVAlbumContentViewBgColor1;
+@property (strong, nonatomic) UIColor *MVAlbumContentViewBgColor2;
 
 - (void)generateArtworkImageAndDisplay:(BOOL)animated;
 
@@ -88,11 +89,20 @@ static NSCache *artworkImagesCache = nil;
 		__block __weak MVAlbumCell *cell = self;
 		
 		self.backgroundColor = [UIColor clearColor];
-
-		MVView *contentView = [[MVView alloc] initWithFrame:self.contentView.bounds];
-		contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		contentView.backgroundColor = [UIColor clearColor];
-		contentView.drawBlock = ^(UIView *view, CGContextRef ctx)
+		
+		self.MVAlbumContentViewBgColor0 = [UIColor colorWithWhite:0.0f
+															alpha:0.15];
+		self.MVAlbumContentViewBgColor1 = [UIColor colorWithWhite:0.0f
+															alpha:0.0f];
+		self.MVAlbumContentViewBgColor2 = [UIColor colorWithWhite:0.0f
+															alpha:0.15];
+		
+		self.cv = [[MVView alloc] initWithFrame:self.contentView.bounds];
+		self.cv.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		self.cv.backgroundColor = [UIColor clearColor];
+		[self drawContentView];
+		/*
+		self.cv = ^(UIView *view, CGContextRef ctx)
 		{
 			CGContextRef context = UIGraphicsGetCurrentContext();
 
@@ -120,7 +130,8 @@ static NSCache *artworkImagesCache = nil;
 			CGColorSpaceRelease(colorSpace);
 			CGContextRestoreGState(context);
 		};
-		[self.contentView addSubview:contentView];
+		*/
+		[self.contentView addSubview:self.cv];
 
 		hideAlbumLabelView_ = [[MVRoundedLabelView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
 		hideAlbumLabelView_.text = @"";
@@ -366,6 +377,28 @@ static NSCache *artworkImagesCache = nil;
 	CGRect hideArtistLabelViewFrame = self.hideArtistLabelView.frame;
 	hideArtistLabelViewFrame.origin.y = roundf((self.frame.size.height - hideArtistLabelViewFrame.size.height) / 2);
 	self.hideArtistLabelView.frame = hideArtistLabelViewFrame;
+	
+	
+	NSIndexPath *indexPath = [self.tableView indexPathForCell:self];
+	NSInteger numberOfRows = [self.tableView numberOfRowsInSection:indexPath.section];
+	
+	if ( indexPath.row == numberOfRows - 1 ) {
+		self.MVAlbumContentViewBgColor2 = [UIColor colorWithWhite:0.0f
+															alpha:0.0f];
+	} else {
+		self.MVAlbumContentViewBgColor2 = [UIColor colorWithWhite:0.0f
+															alpha:0.15];
+	}
+	
+	if ( indexPath.row == 0 ) {
+		self.MVAlbumContentViewBgColor0 = [UIColor colorWithWhite:0.0f
+															alpha:0.0f];
+	} else {
+		self.MVAlbumContentViewBgColor0 = [UIColor colorWithWhite:0.0f
+															alpha:0.15];
+	}
+	
+	[self drawContentView];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -534,6 +567,41 @@ static NSCache *artworkImagesCache = nil;
 			asset = nil;
 		}
 	});
+}
+
+- (void)drawContentView
+{
+	UIColor *top = self.MVAlbumContentViewBgColor0;
+	UIColor *mid = self.MVAlbumContentViewBgColor1;
+	UIColor *bot = self.MVAlbumContentViewBgColor2;
+	self.cv.drawBlock = ^(UIView *view, CGContextRef ctx)
+	{
+		CGContextRef context = UIGraphicsGetCurrentContext();
+		
+		CGContextSaveGState(context);
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+		
+		CGFloat locations[4];
+		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:4];
+		[colors addObject:(id)top.CGColor];
+		locations[0] = 0.0;
+		[colors addObject:(id)mid.CGColor];
+		locations[1] = 0.05;
+		[colors addObject:(id)mid.CGColor];
+		locations[2] = 0.95;
+		[colors addObject:(id)bot.CGColor];
+		locations[3] = 1;
+		CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+		
+		CGContextDrawLinearGradient(context,
+									gradient,
+									CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMinY(self.bounds)),
+									CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMaxY(self.bounds)),
+									0);
+		
+		CGColorSpaceRelease(colorSpace);
+		CGContextRestoreGState(context);
+	};
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
