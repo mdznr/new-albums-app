@@ -97,7 +97,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 	CGRect rect = [[UIScreen mainScreen] bounds];
 	self.window = [[MVWindow alloc] initWithFrame:rect];
 
-	self.window.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.75];
+	self.window.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5];
 
 	self.rootViewController = [[MVRootViewController alloc] initWithContextSource:self.coreManager
 																	  coreManager:self.coreManager];

@@ -10,10 +10,11 @@
 
 #define kMVRoundedLabelMargin 12
 #define kMVRoundedLabelHeight 28
-#define kMVRoundedLabelFont [UIFont boldSystemFontOfSize:16]
-#define kMVRoundedLabelColor [UIColor colorWithWhite:0.8 alpha:1]
-#define kMVRoundedLabelEnabledColor [UIColor colorWithWhite:0.14 alpha:1]
-#define kMVRoundedLabelEnabledFontColor [UIColor colorWithWhite:0.95 alpha:1]
+#define kMVRoundedLabelFont [UIFont systemFontOfSize:16]
+#define kMVRoundedLabelColor [UIColor colorWithWhite:0.95 alpha:1]
+#define kMVRoundedLabelEnabledColor [UIColor colorWithWhite:0.95 alpha:1]
+#warning use color of background for font color?
+#define kMVRoundedLabelEnabledFontColor [UIColor colorWithWhite:0.14 alpha:1]
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,8 +28,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
 	self = [super initWithFrame:frame];
-	if ( self )
-	{
+	if ( self ) {
 		text_ = @"";
 		
 		self.backgroundColor = [UIColor clearColor];
@@ -55,13 +55,13 @@
 													cornerRadius:rrect.size.height / 2];
 	if ( !self.isEnabled ) {
 		[kMVRoundedLabelColor setStroke];
-		path.lineWidth = 2;
+		path.lineWidth = 1;
 		[path stroke];
 	} else {
 		[kMVRoundedLabelEnabledColor set];
 		[path fill];
 		[kMVRoundedLabelEnabledColor setStroke];
-		path.lineWidth = 2;
+		path.lineWidth = 1;
 		[path stroke];
 	}
   

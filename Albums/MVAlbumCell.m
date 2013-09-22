@@ -16,9 +16,9 @@
 
 #define kMVAlbumArtSize 60
 
-#define kMVAlbumContentViewBgColor0 [UIColor colorWithWhite:0.0f alpha:0.25]
+#define kMVAlbumContentViewBgColor0 [UIColor colorWithWhite:0.0f alpha:0.15]
 #define kMVAlbumContentViewBgColor1 [UIColor colorWithWhite:0.0f alpha:0.0f]
-#define kMVAlbumContentViewBgColor2 [UIColor colorWithWhite:0.0f alpha:0.25]
+#define kMVAlbumContentViewBgColor2 [UIColor colorWithWhite:0.0f alpha:0.15]
 
 #define kMVAlbumControlStartMargin 2
 #define kMVAlbumControlEndMarginFromY -6

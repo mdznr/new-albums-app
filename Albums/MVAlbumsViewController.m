@@ -167,6 +167,7 @@
 	UIView *nav = ((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground;
 	
 #warning reduce redundant calls to set alpha?
+#warning wish there was a way to set blur instead of just opacity
 	if ( scrollView.contentOffset.y < -20.0f ) {
 		nav.alpha = 0.0f;
 	} else if ( scrollView.contentOffset.y > 0.0f ) {
