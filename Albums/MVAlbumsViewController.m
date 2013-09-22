@@ -121,7 +121,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)dealloc
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,108 +425,104 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)reloadTableViewAfterBlock:(void(^)(void))block
 {
-  NSArray *oldObjects = [NSArray arrayWithArray:self.fetchedResultsController.fetchedObjects];
-  self.fetchedResultsController.delegate = nil;
-  
-  block();
-  
-  [self.fetchedResultsController performFetch:nil];
-  self.fetchedResultsController.delegate = self;
-  
-  NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-  NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-  NSIndexPath *indexPath;
-  MVAlbum *album;
-  NSArray *newObjects = [NSArray arrayWithArray:self.fetchedResultsController.fetchedObjects];
-  NSUInteger oldObjectsCount = oldObjects.count;
-  NSUInteger newObjectsCount = newObjects.count;
-  
-  for(NSUInteger i=0;i<oldObjectsCount;i++)
-  {
-    album = [oldObjects objectAtIndex:i];
-    if(![newObjects containsObject:album])
-    {
-      indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-      [indexPathsToDelete addObject:indexPath];
-    }
-  }
-  for(NSUInteger i=0;i<newObjectsCount;i++)
-  {
-    album = [newObjects objectAtIndex:i];
-    if(![oldObjects containsObject:album])
-    {
-      indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-      [indexPathsToInsert addObject:indexPath];
-    }
-  }
-  
-  [self.tableView beginUpdates];
-  if ([indexPathsToDelete count] > 0) {
+	NSArray *oldObjects = [NSArray arrayWithArray:self.fetchedResultsController.fetchedObjects];
+	self.fetchedResultsController.delegate = nil;
+
+	block();
+
+	[self.fetchedResultsController performFetch:nil];
+	self.fetchedResultsController.delegate = self;
+
+	NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+	NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+	NSIndexPath *indexPath;
+	MVAlbum *album;
+	NSArray *newObjects = [NSArray arrayWithArray:self.fetchedResultsController.fetchedObjects];
+	NSUInteger oldObjectsCount = oldObjects.count;
+	NSUInteger newObjectsCount = newObjects.count;
+	
+	for ( NSUInteger i=0; i < oldObjectsCount; i++ ) {
+		album = [oldObjects objectAtIndex:i];
+		if ( ![newObjects containsObject:album] ) {
+			indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+			[indexPathsToDelete addObject:indexPath];
+		}
+	}
+	for ( NSUInteger i=0; i < newObjectsCount; i++ ) {
+		album = [newObjects objectAtIndex:i];
+		if ( ![oldObjects containsObject:album] ) {
+			indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+			[indexPathsToInsert addObject:indexPath];
+		}
+	}
+	
+	[self.tableView beginUpdates];
+	if ([indexPathsToDelete count] > 0) {
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
                           withRowAnimation:UITableViewRowAnimationBottom];
-  }
-  if ([indexPathsToInsert count] > 0) {
-    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                          withRowAnimation:UITableViewRowAnimationBottom];
-  }
-  [self.tableView endUpdates];
-  
-  NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
-  for (NSIndexPath *indexPath in visibleIndexPaths)
-  {
-    // if first row is visible, layout it
-    // (because if the row before it was removed, corners have changed
-    if (indexPath.row == 0)
-      [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
-    // if last row is visible, layout it
-    // (because if the row after it was removed, corners have changed
-    else if (indexPath.row == newObjects.count - 1)
-      [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
-  }
-  
-  [self updatePlaceholder:YES];
+	}
+	if ( [indexPathsToInsert count] > 0 ) {
+		[self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+							  withRowAnimation:UITableViewRowAnimationBottom];
+	}
+	[self.tableView endUpdates];
+	
+	NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+	for ( NSIndexPath *indexPath in visibleIndexPaths ) {
+		// if first row is visible, layout it
+		// (because if the row before it was removed, corners have changed
+		if (indexPath.row == 0) {
+			[[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
+		}
+		// if last row is visible, layout it
+		// (because if the row after it was removed, corners have changed
+		else if ( indexPath.row == newObjects.count - 1 ) {
+			[[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
+		}
+	}
+	
+	[self updatePlaceholder:YES];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)updatePlaceholder:(BOOL)animated
 {
-  if(self.fetchedResultsController.fetchedObjects.count == 0)
-  {
-    if(!self.placeholderVisible)
-    {
-      self.placeholderVisible = YES;
-      self.placeholderView.alpha = 0.0;
-      [self.view addSubview:self.placeholderView];
-      [UIView animateWithDuration:0.2 animations:^{
-        [UIView setAnimationsEnabled:animated];
-        self.placeholderView.alpha = 1.0;
-        [UIView setAnimationsEnabled:YES];
-      }];
-    }
-  }
-  else if(self.placeholderVisible)
-  {
-    self.placeholderVisible = NO;
-    [UIView animateWithDuration:0.2 animations:^{
-      [UIView setAnimationsEnabled:animated];
-      self.placeholderView.alpha = 0.0;
-      [UIView setAnimationsEnabled:YES];
-    } completion:^(BOOL finished) {
-      [self.placeholderView removeFromSuperview];
-    }];
-  }
+	if ( self.fetchedResultsController.fetchedObjects.count == 0 ) {
+		if ( !self.placeholderVisible ) {
+			self.placeholderVisible = YES;
+			self.placeholderView.alpha = 0.0;
+			[self.view addSubview:self.placeholderView];
+			[UIView animateWithDuration:0.2
+							 animations:^{
+				[UIView setAnimationsEnabled:animated];
+				self.placeholderView.alpha = 1.0;
+				[UIView setAnimationsEnabled:YES];
+			}];
+		}
+	}
+	else if ( self.placeholderVisible ) {
+		self.placeholderVisible = NO;
+		[UIView animateWithDuration:0.2
+						 animations:^{
+			[UIView setAnimationsEnabled:animated];
+			self.placeholderView.alpha = 0.0;
+			[UIView setAnimationsEnabled:YES];
+		} completion:^(BOOL finished) {
+			[self.placeholderView removeFromSuperview];
+		}];
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)displayiTunesError:(NSString*)message
 {
-  NSString *title = NSLocalizedString(@"Error",
-                                      @"iTunes Error");
-  [[[UIAlertView alloc] initWithTitle:title
-                              message:message
-                             delegate:nil
-                    cancelButtonTitle:NSLocalizedString(@"OK", @"iTunes Error OK Button")
-                    otherButtonTitles:nil] show];
+	NSString *title = NSLocalizedString(@"Error",
+										@"iTunes Error");
+	[[[UIAlertView alloc] initWithTitle:title
+								message:message
+							   delegate:nil
+					  cancelButtonTitle:NSLocalizedString(@"OK", @"iTunes Error OK Button")
+					  otherButtonTitles:nil] show];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,11 +533,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (MVPlaceholderView*)placeholderView
 {
-  if(!placeholderView_)
-  {
-    placeholderView_ = [[MVPlaceholderView alloc] initWithFrame:self.view.bounds];
-  }
-  return placeholderView_;
+	if ( !placeholderView_ ) {
+		placeholderView_ = [[MVPlaceholderView alloc] initWithFrame:self.view.bounds];
+	}
+	return placeholderView_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -552,15 +547,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-  if(buttonIndex == 0)
-  {
-    __block __weak MVAlbumsViewController *weakSelf = self;
-    [self reloadTableViewAfterBlock:^{
-      weakSelf.actionSheetArtistToHide.hiddenValue = YES;
-      [weakSelf.contextSource.uiMoc mv_save];
-      weakSelf.actionSheetArtistToHide = nil;
-    }];
-  }
+	if ( buttonIndex == 0 ) {
+		__block __weak MVAlbumsViewController *weakSelf = self;
+		[self reloadTableViewAfterBlock:^{
+			weakSelf.actionSheetArtistToHide.hiddenValue = YES;
+			[weakSelf.contextSource.uiMoc mv_save];
+			weakSelf.actionSheetArtistToHide = nil;
+		}];
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -571,8 +565,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
 {
-  [self dismissViewControllerAnimated:YES completion:^{
-  }];
+	[self dismissViewControllerAnimated:YES
+							 completion:^{}];
 }
 
 @end
