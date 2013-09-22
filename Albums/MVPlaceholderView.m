@@ -50,7 +50,7 @@
 		self.headLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, startY + 70 - 17 / 2,
 																   CGRectGetWidth(self.frame) - 60,
 																   40)];
-		self.headLabel.text = NSLocalizedString(@"No Album", @"Blank state head title");
+		self.headLabel.text = NSLocalizedString(@"No Albums", @"Blank state head title");
 		self.headLabel.textColor = [UIColor colorWithRed:0.9059 green:0.9059 blue:0.9059 alpha:1];
 		self.headLabel.textAlignment = NSTextAlignmentCenter;
 		self.headLabel.backgroundColor = [UIColor clearColor];
@@ -62,8 +62,7 @@
 		self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, startY + 110 - 10.5,
 																		  CGRectGetWidth(self.frame) - 60,
 																		  200)];
-		self.descriptionLabel.text = NSLocalizedString(@"You should add some songs to your device so \
-													   we can figure out your favorite artists", @"Blank state description");
+		self.descriptionLabel.text = NSLocalizedString(@"You should add some songs to your device so we can figure out your favorite artists", @"Blank state description");
 		self.descriptionLabel.textColor = [UIColor colorWithRed:0.7490 green:0.7490 blue:0.7490 alpha:1];
 		self.descriptionLabel.textAlignment = NSTextAlignmentCenter;
 		self.descriptionLabel.backgroundColor = [UIColor clearColor];
