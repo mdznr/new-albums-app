@@ -457,9 +457,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 	}
 	
 	[self.tableView beginUpdates];
-	if ([indexPathsToDelete count] > 0) {
-    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                          withRowAnimation:UITableViewRowAnimationBottom];
+	if ( [indexPathsToDelete count] > 0 ) {
+#warning right animation doesn't work well when swiping left
+		[self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+							  withRowAnimation:UITableViewRowAnimationRight];
 	}
 	if ( [indexPathsToInsert count] > 0 ) {
 		[self.tableView insertRowsAtIndexPaths:indexPathsToInsert
