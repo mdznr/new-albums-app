@@ -11,8 +11,8 @@
 #define kMVRoundedLabelMargin 12
 #define kMVRoundedLabelHeight 28
 #define kMVRoundedLabelFont [UIFont systemFontOfSize:16]
-#define kMVRoundedLabelColor [UIColor colorWithWhite:0.95 alpha:1]
-#define kMVRoundedLabelEnabledColor [UIColor colorWithWhite:0.95 alpha:1]
+#define kMVRoundedLabelColor [UIColor colorWithWhite:1.0 alpha:0.95]
+#define kMVRoundedLabelEnabledColor [UIColor colorWithWhite:1.0 alpha:0.95]
 #warning use color of background for font color?
 #define kMVRoundedLabelEnabledFontColor [UIColor colorWithWhite:0.14 alpha:1]
 
@@ -21,8 +21,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation MVRoundedLabelView
 
-@synthesize text          = text_,
-            enabled       = enabled_;
+@synthesize text    = text_,
+            enabled = enabled_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)frame
@@ -50,7 +50,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect
 {
-	CGRect rrect = CGRectInset(self.bounds, 2, 2);
+	CGRect rrect = CGRectInset(self.bounds, 1, 1);
 	UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:rrect
 													cornerRadius:rrect.size.height / 2];
 	if ( !self.isEnabled ) {

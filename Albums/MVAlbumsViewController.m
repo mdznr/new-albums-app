@@ -230,6 +230,16 @@
 			}
 		   
 		   if ( result ) {
+#warning this animation is not exact to the time that it takes to the pushed view controller starts to appear at status bar
+			   [UIView animateWithDuration:1.0f
+									 delay:0.0f
+					usingSpringWithDamping:1.0f
+					 initialSpringVelocity:1.0f
+								   options:UIViewAnimationOptionBeginFromCurrentState
+								animations:^{
+									((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground.alpha = 0.0f;
+								}
+								completion:^(BOOL finished) {}];
 				[self presentViewController:storeController animated:YES completion:^{
 					cell.loading = NO;
 					[tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
@@ -566,6 +576,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
 {
+	[UIView animateWithDuration:0.75f
+						  delay:0.0f
+		 usingSpringWithDamping:1.0f
+		  initialSpringVelocity:1.0f
+						options:UIViewAnimationOptionBeginFromCurrentState
+					 animations:^{
+#warning set alpha bsaed on scroll position
+						 ((AppDelegate *)[UIApplication sharedApplication].delegate).statusBarBackground.alpha = 1.0f;
+					 }
+					 completion:^(BOOL finished) {}];
   [self dismissViewControllerAnimated:YES completion:^{
   }];
 }

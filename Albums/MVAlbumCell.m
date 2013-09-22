@@ -166,7 +166,10 @@ static NSCache *artworkImagesCache = nil;
 				if ( cell.isHighlighted || cell.isSelected ) {
 					[[UIColor colorWithWhite:0 alpha:0.6] set];
 				} else {
-					[[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
+					[[UIColor colorWithRed:0.9765
+									 green:0.6471
+									  blue:0.1882
+									 alpha:1.0000] set];
 				}
 				[[UIBezierPath bezierPathWithRoundedRect:labelRect
 											cornerRadius:9] fill];
